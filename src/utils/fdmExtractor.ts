@@ -518,10 +518,43 @@ export function generateResultExcel(results: ExtractionResult[]): XLSX.WorkBook 
     };
   }
 
-  // Set column widths
-  ws['!cols'] = headers.map(() => ({ wch: 25 }));
+// Set column widths
+ws['!cols'] = headers.map(() => ({ wch: 25 }));
 
-  // Create workbook
+// [NEW] Apply number format #,##0 to columns J to BC (rows 2 onwards)
+// Column J = index 10, Column BC = index 55
+const numFmt = '#,##0';
+for (let col = 10; col <= 55; col++) {
+  const colLetter = getColumnLetter(col);
+  for (let row = 2; row <= results.length + 1; row++) {
+    const cellAddr = `${colLetter}${row}`;
+    if (ws[cellAddr]) {
+      ws[cellAddr].z = numFmt;
+    }
+  }
+}
+
+// [NEW] HEADER DINAMIS SHEET 1 - Same as Python
+const headerUpdates: { [key: string]: string } = {
+  'V1': '="NJOP Bumi Berupa Pengembangan Tanah (Rp) (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"%)"',
+  'AA1': '="NJOP BUMI (Rp) AREA PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+  'AC1': '="NJOP BUMI (Rp) AREAL BELUM PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+  'AG1': '="NJOP BUMI (Rp) AREAL TIDAK PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+  'AK1': '="NJOP BUMI (Rp) AREAL PENGAMAN pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+  'AO1': '="NJOP BUMI (Rp) AREAL EMPLASEMEN pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+  'AX1': '="SIMULASI TOTAL NJOP (TANAH + BANGUNAN) 2026 (Hanya Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% dan NDT Tetap)"',
+  'AY1': '="SIMULASI SPPT 2026 (Hanya Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% dan NDT Tetap)"',
+  'BB1': '="SIMULASI TOTAL NJOP (TANAH + BANGUNAN) 2026 (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% + NDT "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+  'BC1': '="SIMULASI SPPT 2026 (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% + NDT "&\'2. Kesimpulan\'!$E$14*100&"%)"'
+};
+
+for (const [cellAddr, formula] of Object.entries(headerUpdates)) {
+  ws[cellAddr] = { f: formula, t: 'n' };
+}
+
+// Create workbook  
+  
+// Create workbook
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "1. Hasil");
 
