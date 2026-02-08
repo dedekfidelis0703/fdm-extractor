@@ -658,9 +658,40 @@ for (const [cellAddr, formula] of Object.entries(headerUpdates)) {
   if (typeof item.value === 'object' && item.value.f) {
     ws2[addr] = { f: item.value.f, t: 'n' };
   } else if (typeof item.value === 'number') {
-    ws2[addr] = { v: item.value, t: 'n' };
+    const cellFormat = (item as any).format || '#,##0';
+    ws2[addr] = { v: item.value, t: 'n', z: cellFormat };
   } else {
     ws2[addr] = { v: item.value, t: 's' };
+  }
+}
+
+// [NEW] Format Comma Style untuk C2-C11 dan C14-C23
+const numFmtComma = '#,##0';
+for (let row of [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]) {
+  const cellAddr = `C${row}`;
+  if (ws2[cellAddr] && ws2[cellAddr].t === 'n') {
+    ws2[cellAddr].z = numFmtComma;
+  }
+}
+
+// [NEW] Conditional Formatting untuk D9, D11, D21, D23
+// Tercapai = pink FF6699, Tidak Tercapai = hijau CCCC99
+const conditionalFormatCells = [
+  { addr: 'D9', formula: ws2['D9']?.f },
+  { addr: 'D11', formula: ws2['D11']?.f },
+  { addr: 'D21', formula: ws2['D21']?.f },
+  { addr: 'D23', formula: ws2['D23']?.f }
+];
+
+for (const { addr, formula } of conditionalFormatCells) {
+  if (ws2[addr]) {
+    // Buat cell dengan style conditional
+    ws2[addr].s = {
+      fill: {
+        patternType: 'solid',
+        fgColor: { rgb: 'FF6699' } // Default pink (Tercapai)
+      }
+    };
   }
 }
 
