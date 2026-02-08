@@ -518,43 +518,41 @@ export function generateResultExcel(results: ExtractionResult[]): XLSX.WorkBook 
     };
   }
 
-// Set column widths
-ws['!cols'] = headers.map(() => ({ wch: 25 }));
+  // Set column widths
+  ws['!cols'] = headers.map(() => ({ wch: 25 }));
 
-// [NEW] Apply number format #,##0 to columns J to BC (rows 2 onwards)
-// Column J = index 10, Column BC = index 55
-const numFmt = '#,##0';
-for (let col = 10; col <= 55; col++) {
-  const colLetter = getColumnLetter(col);
-  for (let row = 2; row <= results.length + 1; row++) {
-    const cellAddr = `${colLetter}${row}`;
-    if (ws[cellAddr]) {
-      ws[cellAddr].z = numFmt;
+  // [NEW] Apply number format #,##0 to columns J to BC (rows 2 onwards)
+  // Column J = index 10, Column BC = index 55
+  const numFmt = '#,##0';
+  for (let col = 10; col <= 55; col++) {
+    const colLetter = getColumnLetter(col);
+    for (let row = 2; row <= results.length + 1; row++) {
+      const cellAddr = `${colLetter}${row}`;
+      if (ws[cellAddr]) {
+        ws[cellAddr].z = numFmt;
+      }
     }
   }
-}
 
-// [NEW] HEADER DINAMIS SHEET 1 - Same as Python
-const headerUpdates: { [key: string]: string } = {
-  'V1': '="NJOP Bumi Berupa Pengembangan Tanah (Rp) (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"%)"',
-  'AA1': '="NJOP BUMI (Rp) AREA PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
-  'AC1': '="NJOP BUMI (Rp) AREAL BELUM PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
-  'AG1': '="NJOP BUMI (Rp) AREAL TIDAK PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
-  'AK1': '="NJOP BUMI (Rp) AREAL PENGAMAN pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
-  'AO1': '="NJOP BUMI (Rp) AREAL EMPLASEMEN pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
-  'AX1': '="SIMULASI TOTAL NJOP (TANAH + BANGUNAN) 2026 (Hanya Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% dan NDT Tetap)"',
-  'AY1': '="SIMULASI SPPT 2026 (Hanya Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% dan NDT Tetap)"',
-  'BB1': '="SIMULASI TOTAL NJOP (TANAH + BANGUNAN) 2026 (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% + NDT "&\'2. Kesimpulan\'!$E$14*100&"%)"',
-  'BC1': '="SIMULASI SPPT 2026 (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% + NDT "&\'2. Kesimpulan\'!$E$14*100&"%)"'
-};
+  // [NEW] HEADER DINAMIS SHEET 1 - Same as Python
+  const headerUpdates: { [key: string]: string } = {
+    'V1': '="NJOP Bumi Berupa Pengembangan Tanah (Rp) (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"%)"',
+    'AA1': '="NJOP BUMI (Rp) AREA PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+    'AC1': '="NJOP BUMI (Rp) AREAL BELUM PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+    'AG1': '="NJOP BUMI (Rp) AREAL TIDAK PRODUKTIF pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+    'AK1': '="NJOP BUMI (Rp) AREAL PENGAMAN pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+    'AO1': '="NJOP BUMI (Rp) AREAL EMPLASEMEN pada A. DATA BUMI (Proyeksi NDT Naik "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+    'AX1': '="SIMULASI TOTAL NJOP (TANAH + BANGUNAN) 2026 (Hanya Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% dan NDT Tetap)"',
+    'AY1': '="SIMULASI SPPT 2026 (Hanya Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% dan NDT Tetap)"',
+    'BB1': '="SIMULASI TOTAL NJOP (TANAH + BANGUNAN) 2026 (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% + NDT "&\'2. Kesimpulan\'!$E$14*100&"%)"',
+    'BC1': '="SIMULASI SPPT 2026 (Kenaikan BIT "&\'2. Kesimpulan\'!$E$2*100&"% + NDT "&\'2. Kesimpulan\'!$E$14*100&"%)"'
+  };
 
-for (const [cellAddr, formula] of Object.entries(headerUpdates)) {
-  ws[cellAddr] = { f: formula, t: 'n' };
-}
+  for (const [cellAddr, formula] of Object.entries(headerUpdates)) {
+    ws[cellAddr] = { f: formula, t: 'n' };
+  }
 
-// Create workbook  
-  
-// Create workbook
+  // Create workbook
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "1. Hasil");
 
@@ -572,67 +570,67 @@ for (const [cellAddr, formula] of Object.entries(headerUpdates)) {
     { cell: "E2", value: 0.103, format: '0.0%' },
     { cell: "A1", value: "Poin" },
     // B1: Dynamic formula (same as Python)
-    { cell: "B1", value: { f: '"Keterangan (BIT + "&E2*100&"% dan NDT Tetap)"' } },
+    { cell: "B1", value: { f: '\"Keterangan (BIT + \"&E2*100&\"% dan NDT Tetap)\"' } },
     { cell: "C1", value: "Nilai" },
     { cell: "D1", value: "Keterangan" },
     
     { cell: "A2", value: "Simulasi Penerimaan PBB 2026" },
     { cell: "B2", value: "Perkebunan" },
-    { cell: "C2", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Perkebunan\",'1. Hasil'!AY2:AY10000)" } },
+    { cell: "C2", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Perkebunan\\\",'1. Hasil'!AY2:AY10000)" } },
     { cell: "A3", value: "Simulasi Penerimaan PBB 2026" },
     { cell: "B3", value: "Minerba" },
-    { cell: "C3", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Minerba\",'1. Hasil'!AY2:AY10000)" } },
+    { cell: "C3", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Minerba\\\",'1. Hasil'!AY2:AY10000)" } },
     { cell: "A4", value: "Simulasi Penerimaan PBB 2026" },
     { cell: "B4", value: "Perhutanan (HTI)" },
-    { cell: "C4", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Perhutanan (HTI)\",'1. Hasil'!AY2:AY10000)" } },
+    { cell: "C4", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Perhutanan (HTI)\\\",'1. Hasil'!AY2:AY10000)" } },
     { cell: "A5", value: "Simulasi Penerimaan PBB 2026" },
     { cell: "B5", value: "Perhutanan (Hutan Alam)" },
-    { cell: "C5", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Perhutanan (Hutan Alam)\",'1. Hasil'!AY2:AY10000)" } },
+    { cell: "C5", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Perhutanan (Hutan Alam)\\\",'1. Hasil'!AY2:AY10000)" } },
     { cell: "A6", value: "Simulasi Penerimaan PBB 2026" },
     { cell: "B6", value: "Sektor Lainnya" },
-    { cell: "C6", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Sektor Lainnya\",'1. Hasil'!AY2:AY10000)" } },
+    { cell: "C6", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Sektor Lainnya\\\",'1. Hasil'!AY2:AY10000)" } },
     
     { cell: "A7", value: "Simulasi Penerimaan PBB 2026 (Collection Rate 100%)" },
-    { cell: "B7", value: { f: '(COUNT(\'1. Hasil\'!A2:A10000))&" NOP"' } },
+    { cell: "B7", value: { f: '(COUNT(\\'1. Hasil\\'!A2:A10000))&\" NOP\"' } },
     { cell: "C7", value: { f: "SUM(C2:C6)" } },
     { cell: "A8", value: "Target Penerimaan PBB 2026" },
     { cell: "C8", value: 110289165592 },
     { cell: "A9", value: "Selisih antara Simulasi (Collection Rate 100%) & Target" },
     { cell: "C9", value: { f: "C7-C8" } },
-    { cell: "D9", value: { f: 'IF(C9>0,"Tercapai","Tidak Tercapai")' } },
+    { cell: "D9", value: { f: 'IF(C9>0,\"Tercapai\",\"Tidak Tercapai\")' } },
     
     // A10: Dynamic formula (same as Python)
-    { cell: "A10", value: { f: '"Simulasi Penerimaan PBB 2026 (Collection Rate "&B10*100&"%)"' } },
+    { cell: "A10", value: { f: '\"Simulasi Penerimaan PBB 2026 (Collection Rate \"&B10*100&\"%)\"' } },
     { cell: "B10", value: 0.95, format: '0%' },
     { cell: "C10", value: { f: "C7*B10" } },
     // A11: Dynamic formula (same as Python)
-    { cell: "A11", value: { f: '"Selisih antara Simulasi (Collection Rate "&B10*100&"%)"&" Target"' } },
+    { cell: "A11", value: { f: '\"Selisih antara Simulasi (Collection Rate \"&B10*100&\"%)\"&\" Target\"' } },
     { cell: "C11", value: { f: "C10-C8" } },
-    { cell: "D11", value: { f: 'IF(C11>0,"Tercapai","Tidak Tercapai")' } },
+    { cell: "D11", value: { f: 'IF(C11>0,\"Tercapai\",\"Tidak Tercapai\")' } },
     
     { cell: "A13", value: "Poin" },
     // B13: Dynamic formula (same as Python)
-    { cell: "B13", value: { f: '"Keterangan (BIT + "&E2*100&"% dan NDT + "&E14*100&"%)"' } },
+    { cell: "B13", value: { f: '\"Keterangan (BIT + \"&E2*100&\"% dan NDT + \"&E14*100&\"%)\"' } },
     { cell: "C13", value: "Nilai" },
     { cell: "D13", value: "Keterangan" },
     { cell: "E13", value: "Skenario Kenaikan NDT" },
     
     { cell: "A14", value: { f: "=A2" } },
     { cell: "B14", value: { f: "=B2" } },
-    { cell: "C14", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Perkebunan\",'1. Hasil'!BC2:BC10000)" } },
+    { cell: "C14", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Perkebunan\\\",'1. Hasil'!BC2:BC10000)" } },
     { cell: "E14", value: 0.46, format: '0%' },
     { cell: "A15", value: { f: "=A3" } },
     { cell: "B15", value: { f: "=B3" } },
-    { cell: "C15", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Minerba\",'1. Hasil'!BC2:BC10000)" } },
+    { cell: "C15", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Minerba\\\",'1. Hasil'!BC2:BC10000)" } },
     { cell: "A16", value: { f: "=A4" } },
     { cell: "B16", value: { f: "=B4" } },
-    { cell: "C16", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Perhutanan (HTI)\",'1. Hasil'!BC2:BC10000)" } },
+    { cell: "C16", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Perhutanan (HTI)\\\",'1. Hasil'!BC2:BC10000)" } },
     { cell: "A17", value: { f: "=A5" } },
     { cell: "B17", value: { f: "=B5" } },
-    { cell: "C17", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Perhutanan (Hutan Alam)\",'1. Hasil'!BC2:BC10000)" } },
+    { cell: "C17", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Perhutanan (Hutan Alam)\\\",'1. Hasil'!BC2:BC10000)" } },
     { cell: "A18", value: { f: "=A6" } },
     { cell: "B18", value: { f: "=B6" } },
-    { cell: "C18", value: { f: "SUMIF('1. Hasil'!C2:C10000,\"Sektor Lainnya\",'1. Hasil'!BC2:BC10000)" } },
+    { cell: "C18", value: { f: "SUMIF('1. Hasil'!C2:C10000,\\\"Sektor Lainnya\\\",'1. Hasil'!BC2:BC10000)" } },
     
     { cell: "A19", value: { f: "=A7" } },
     { cell: "B19", value: { f: "=B7" } },
@@ -644,56 +642,35 @@ for (const [cellAddr, formula] of Object.entries(headerUpdates)) {
     { cell: "D21", value: { f: 'IF(C21>0,"Tercapai","Tidak Tercapai")' } },
     
     // A22: Dynamic formula (same as Python)
-    { cell: "A22", value: { f: '"Simulasi Penerimaan PBB 2026 (Collection Rate "&B22*100&"%)"' } },
+    { cell: "A22", value: { f: '\"Simulasi Penerimaan PBB 2026 (Collection Rate \"&B22*100&\"%)\"' } },
     { cell: "B22", value: 0.95, format: '0%' },
     { cell: "C22", value: { f: "C19*B22" } },
     // A23: Dynamic formula (same as Python)
-    { cell: "A23", value: { f: '"Selisih antara Simulasi (Collection Rate "&B22*100&"%)"&" Target"' } },
+    { cell: "A23", value: { f: '\"Selisih antara Simulasi (Collection Rate \"&B22*100&\"%)\"&\" Target\"' } },
     { cell: "C23", value: { f: "C22-C20" } },
     { cell: "D23", value: { f: 'IF(C23>0,"Tercapai","Tidak Tercapai")' } }
   ];
 
   for (const item of kesimpulanData) {
-  const addr = item.cell as string;
-  if (typeof item.value === 'object' && item.value.f) {
-    ws2[addr] = { f: item.value.f, t: 'n' };
-  } else if (typeof item.value === 'number') {
-    const cellFormat = (item as any).format || '#,##0';
-    ws2[addr] = { v: item.value, t: 'n', z: cellFormat };
-  } else {
-    ws2[addr] = { v: item.value, t: 's' };
+    const addr = item.cell as string;
+    if (typeof item.value === 'object' && item.value.f) {
+      ws2[addr] = { f: item.value.f, t: 'n' };
+    } else if (typeof item.value === 'number') {
+      const cellFormat = (item as any).format || '#,##0';
+      ws2[addr] = { v: item.value, t: 'n', z: cellFormat };
+    } else {
+      ws2[addr] = { v: item.value, t: 's' };
+    }
   }
-}
 
-// [NEW] Format Comma Style untuk C2-C11 dan C14-C23
-const numFmtComma = '#,##0';
-for (let row of [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]) {
-  const cellAddr = `C${row}`;
-  if (ws2[cellAddr] && ws2[cellAddr].t === 'n') {
-    ws2[cellAddr].z = numFmtComma;
+  // [NEW] Format Comma Style untuk C2-C11 dan C14-C23
+  const numFmtComma = '#,##0';
+  for (const row of [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]) {
+    const cellAddr = `C${row}`;
+    if (ws2[cellAddr] && ws2[cellAddr].t === 'n') {
+      ws2[cellAddr].z = numFmtComma;
+    }
   }
-}
-
-// [NEW] Conditional Formatting untuk D9, D11, D21, D23
-// Tercapai = pink FF6699, Tidak Tercapai = hijau CCCC99
-const conditionalFormatCells = [
-  { addr: 'D9', formula: ws2['D9']?.f },
-  { addr: 'D11', formula: ws2['D11']?.f },
-  { addr: 'D21', formula: ws2['D21']?.f },
-  { addr: 'D23', formula: ws2['D23']?.f }
-];
-
-for (const { addr, formula } of conditionalFormatCells) {
-  if (ws2[addr]) {
-    // Buat cell dengan style conditional
-    ws2[addr].s = {
-      fill: {
-        patternType: 'solid',
-        fgColor: { rgb: 'FF6699' } // Default pink (Tercapai)
-      }
-    };
-  }
-}
 
   // Set range for sheet 2
   ws2['!ref'] = 'A1:E23';
