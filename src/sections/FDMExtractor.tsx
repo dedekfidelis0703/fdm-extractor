@@ -116,23 +116,22 @@ export function FDMExtractor() {
   }, [uploadedFiles]);
 
   // Download result again
-  const handleDownloadAgain = useCallback(() => {
-    if (!extractionResults || extractionResults.length === 0) {
-      setError('Tidak ada hasil ekstraksi yang tersedia untuk didownload');
-      return;
-    }
-
-    try {
-      const workbook = await generateResultExcel(results);
-      const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([wbout], { type: 'application/octet-stream' });
-      saveAs(blob, 'Hasil_Ekstraksi_FDM.xlsx');
-      setSuccess('File berhasil didownload ulang!');
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err) {
-      setError(`Gagal mendownload file: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    }
-  }, [extractionResults]);
+const handleDownloadAgain = useCallback(async () => {
+  if (!extractionResults || extractionResults.length === 0) {
+    setError('Tidak ada hasil ekstraksi yang tersedia untuk didownload');
+    return;
+  }
+  try {
+    const workbook = await generateResultExcel(extractionResults);
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, 'Hasil_Ekstraksi_FDM.xlsx');
+    setSuccess('File berhasil didownload ulang!');
+    setTimeout(() => setSuccess(null), 3000);
+  } catch (err) {
+    setError(`Gagal mendownload file: ${err instanceof Error ? err.message : 'Unknown error'}`);
+  }
+}, [extractionResults]);
 
   // Start new extraction
   const handleNewExtraction = useCallback(() => {
