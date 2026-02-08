@@ -102,9 +102,9 @@ export function FDMExtractor() {
       setExtractionResults(results);
       
       // Auto download after extraction
-      const workbook = generateResultExcel(results);
-      const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([wbout], { type: 'application/octet-stream' });
+      const workbook = await generateResultExcel(results);
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, 'Hasil_Ekstraksi_FDM.xlsx');
       
       setSuccess('Ekstraksi berhasil! File hasil telah didownload secara otomatis.');
@@ -123,7 +123,7 @@ export function FDMExtractor() {
     }
 
     try {
-      const workbook = generateResultExcel(extractionResults);
+      const workbook = await generateResultExcel(results);
       const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       const blob = new Blob([wbout], { type: 'application/octet-stream' });
       saveAs(blob, 'Hasil_Ekstraksi_FDM.xlsx');
