@@ -528,7 +528,7 @@ export async function generateResultExcel(results: ExtractionResult[]): Promise<
     ws.getCell(cellAddr).value = { formula: formula };
   }
 
-  // Create Sheet 2: Kesimpulan
+    // Create Sheet 2: Kesimpulan
   const ws2 = workbook.addWorksheet("2. Kesimpulan");
   
   // Set column widths
@@ -536,16 +536,18 @@ export async function generateResultExcel(results: ExtractionResult[]): Promise<
     { width: 60 }, { width: 30 }, { width: 25 }, { width: 20 }, { width: 20 }
   ];
 
-  // Add data to sheet 2
+  // Row 1
   ws2.getCell('E1').value = "Skenario Kenaikan BIT";
-  ws2.getCell('E2').value = 0.103;
-  ws2.getCell('E2').numFmt = '0.0%';
-  
   ws2.getCell('A1').value = "Poin";
   ws2.getCell('B1').value = { formula: '"Keterangan (BIT + "&E2*100&"% dan NDT Tetap)"' };
   ws2.getCell('C1').value = "Nilai";
   ws2.getCell('D1').value = "Keterangan";
   
+  // E2 - Format Persen 10.3%
+  ws2.getCell('E2').value = 0.103;
+  ws2.getCell('E2').numFmt = '0.0%';
+  
+  // Rows 2-6
   ws2.getCell('A2').value = "Simulasi Penerimaan PBB 2026";
   ws2.getCell('B2').value = "Perkebunan";
   ws2.getCell('C2').value = { formula: "SUMIF('1. Hasil'!C2:C10000,\"Perkebunan\",'1. Hasil'!AY2:AY10000)" };
@@ -571,56 +573,50 @@ export async function generateResultExcel(results: ExtractionResult[]): Promise<
   ws2.getCell('C6').value = { formula: "SUMIF('1. Hasil'!C2:C10000,\"Sektor Lainnya\",'1. Hasil'!AY2:AY10000)" };
   ws2.getCell('C6').numFmt = '#,##0';
   
+  // Row 7
   ws2.getCell('A7').value = "Simulasi Penerimaan PBB 2026 (Collection Rate 100%)";
   ws2.getCell('B7').value = { formula: '(COUNT(\'1. Hasil\'!A2:A10000))&" NOP"' };
   ws2.getCell('C7').value = { formula: "SUM(C2:C6)" };
   ws2.getCell('C7').numFmt = '#,##0';
   
+  // Row 8
   ws2.getCell('A8').value = "Target Penerimaan PBB 2026";
   ws2.getCell('C8').value = 110289165592;
   ws2.getCell('C8').numFmt = '#,##0';
   
+  // Row 9
   ws2.getCell('A9').value = "Selisih antara Simulasi (Collection Rate 100%) & Target";
   ws2.getCell('C9').value = { formula: "C7-C8" };
   ws2.getCell('C9').numFmt = '#,##0';
   ws2.getCell('D9').value = { formula: 'IF(C9>0,"Tercapai","Tidak Tercapai")' };
   
-  // Conditional formatting for D9
-  ws2.getCell('D9').fill = {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: 'FFFF6699' } // Pink default
-  };
-  
+  // Row 10 - B10 Format Persen 95%
   ws2.getCell('A10').value = { formula: '"Simulasi Penerimaan PBB 2026 (Collection Rate "&B10*100&"%)"' };
   ws2.getCell('B10').value = 0.95;
   ws2.getCell('B10').numFmt = '0%';
   ws2.getCell('C10').value = { formula: "C7*B10" };
   ws2.getCell('C10').numFmt = '#,##0';
   
+  // Row 11
   ws2.getCell('A11').value = { formula: '"Selisih antara Simulasi (Collection Rate "&B10*100&"%)"&" Target"' };
   ws2.getCell('C11').value = { formula: "C10-C8" };
   ws2.getCell('C11').numFmt = '#,##0';
   ws2.getCell('D11').value = { formula: 'IF(C11>0,"Tercapai","Tidak Tercapai")' };
   
-  // Conditional formatting for D11
-  ws2.getCell('D11').fill = {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: 'FFFF6699' } // Pink default
-  };
-  
+  // Row 13
   ws2.getCell('A13').value = "Poin";
   ws2.getCell('B13').value = { formula: '"Keterangan (BIT + "&E2*100&"% dan NDT + "&E14*100&"%)"' };
   ws2.getCell('C13').value = "Nilai";
   ws2.getCell('D13').value = "Keterangan";
   ws2.getCell('E13').value = "Skenario Kenaikan NDT";
   
+  // Rows 14-18
   ws2.getCell('A14').value = { formula: "=A2" };
   ws2.getCell('B14').value = { formula: "=B2" };
   ws2.getCell('C14').value = { formula: "SUMIF('1. Hasil'!C2:C10000,\"Perkebunan\",'1. Hasil'!BC2:BC10000)" };
   ws2.getCell('C14').numFmt = '#,##0';
   
+  // E14 - Format Persen 46%
   ws2.getCell('E14').value = 0.46;
   ws2.getCell('E14').numFmt = '0%';
   
@@ -644,6 +640,7 @@ export async function generateResultExcel(results: ExtractionResult[]): Promise<
   ws2.getCell('C18').value = { formula: "SUMIF('1. Hasil'!C2:C10000,\"Sektor Lainnya\",'1. Hasil'!BC2:BC10000)" };
   ws2.getCell('C18').numFmt = '#,##0';
   
+  // Rows 19-23
   ws2.getCell('A19').value = { formula: "=A7" };
   ws2.getCell('B19').value = { formula: "=B7" };
   ws2.getCell('C19').value = { formula: "SUM(C14:C18)" };
@@ -658,13 +655,7 @@ export async function generateResultExcel(results: ExtractionResult[]): Promise<
   ws2.getCell('C21').numFmt = '#,##0';
   ws2.getCell('D21').value = { formula: 'IF(C21>0,"Tercapai","Tidak Tercapai")' };
   
-  // Conditional formatting for D21
-  ws2.getCell('D21').fill = {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: 'FFFF6699' } // Pink default
-  };
-  
+  // Row 22 - B22 Format Persen 95%
   ws2.getCell('A22').value = { formula: '"Simulasi Penerimaan PBB 2026 (Collection Rate "&B22*100&"%)"' };
   ws2.getCell('B22').value = 0.95;
   ws2.getCell('B22').numFmt = '0%';
@@ -675,13 +666,6 @@ export async function generateResultExcel(results: ExtractionResult[]): Promise<
   ws2.getCell('C23').value = { formula: "C22-C20" };
   ws2.getCell('C23').numFmt = '#,##0';
   ws2.getCell('D23').value = { formula: 'IF(C23>0,"Tercapai","Tidak Tercapai")' };
-  
-  // Conditional formatting for D23
-  ws2.getCell('D23').fill = {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: 'FFFF6699' } // Pink default
-  };
 
   return workbook;
 }
