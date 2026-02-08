@@ -69,7 +69,19 @@
   * {
     @apply border-border;
   }
+  
+  /* Font Body untuk seluruh halaman */
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+  }
+  
+  /* Font Heading untuk judul */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+  
+  /* Font Mono untuk code dan monospace */
+  code, pre, kbd, samp {
+    @apply font-mono;
   }
 }
